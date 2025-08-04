@@ -13,5 +13,7 @@
 ```bash
 git clone https://github.com/hanwentao/ioitrans.git
 cd ioitrans
-uv run main.py <task-ISC.md >task-CHN.md
+cp config.json.example config.json
+# Edit config.json accordingly
+uv run main.py <task-name>
 ```

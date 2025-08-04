@@ -1,0 +1,13 @@
+{
+  "model": "qwen3",
+  "think": false,
+  "seed": 0,
+  "prompt_template": "将以下文本从英语翻译成中文。{global_prompt}；{task_prompt}：\n{text}",
+  "global_prompt": [
+    "把 example 翻译成例子，把 example 1 翻译成例 1，以此类推",
+    "把 sample grader 翻译成评测程序示例"
+  ],
+  "task_prompt": {
+    "festival": ["把 coupon 翻译成礼券"]
+  }
+}
