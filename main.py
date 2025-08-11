@@ -113,12 +113,14 @@ def translate(config):
     global_prompt = config.get("global_prompt", [])
     global_prompt = "；".join(global_prompt)
 
-    if verbose > 0:
+    if verbose >= 0:
         print(
             f"Translate with model {model} and thinking {'on' if think else 'off'}",
             file=sys.stderr,
             flush=True,
         )
+    if verbose > 0:
+        pprint.pprint(config)
 
     for task in config.get("tasks", [None]):
         if task is not None and verbose >= 0:
@@ -151,7 +153,7 @@ def translate(config):
         else:
             out = open(path / f"{task}-CHN.md", "w")
 
-        if verbose >= 0:
+        if verbose > 0:
             for chunk in tqdm.tqdm(stream):
                 out.write(chunk.response)
         else:

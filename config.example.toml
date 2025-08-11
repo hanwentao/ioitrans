@@ -9,6 +9,9 @@ think = false
 # 随机数种子，不指定的话由系统决定
 seed = 0
 
+# 数据目录
+path = "data/"
+
 # 提示词模板
 prompt_template = "将以下文本从英语翻译成中文。{global_prompt}；{task_prompt}：\n{text}"
 
