@@ -3,6 +3,7 @@ Translate IOI tasks using Ollama.
 """
 
 import argparse
+import glob
 import pathlib
 import pprint
 import sys
@@ -122,7 +123,18 @@ def translate(config):
     if verbose > 0:
         pprint.pprint(config)
 
-    for task in config.get("tasks", [None]):
+    tasks = config.get("tasks", None)
+    if not tasks:
+        task_paths = glob.glob(str(path / "*-ISC.md"))
+        tasks = [pathlib.Path(p).name.split("-")[0] for p in task_paths]
+        if verbose > 0:
+            print(
+                f"Found {len(tasks)} tasks: {' '.join(tasks)}",
+                file=sys.stderr,
+                flush=True,
+            )
+
+    for task in tasks:
         if task is not None and verbose >= 0:
             print(f"Translating task {task}...", file=sys.stderr, flush=True)
 
