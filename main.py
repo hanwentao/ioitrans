@@ -54,6 +54,18 @@ def parse_args():
         action="store_true",
         help="dump the effective configuration",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="verbose mode",
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="quiet mode",
+    )
     args = parser.parse_args()
     return args
 
@@ -74,6 +86,12 @@ def load_config():
         config["path"] = args.path
     if args.task is not None:
         config["tasks"] = args.task
+    if args.quiet:
+        config["verbose"] = -1
+    elif args.verbose:
+        config["verbose"] = 1
+    else:
+        config["verbose"] = 0
     config["dump"] = args.dump
     return config
 
@@ -86,6 +104,7 @@ def translate(config):
     think = config.get("think", False)
     seed = config.get("seed", None)  # None for random seed
     path = config.get("path", ".")
+    verbose = config.get("verbose", 0)
     if isinstance(path, str):
         path = pathlib.Path(path)
     prompt_template = config.get(
@@ -94,8 +113,15 @@ def translate(config):
     global_prompt = config.get("global_prompt", [])
     global_prompt = "；".join(global_prompt)
 
+    if verbose > 0:
+        print(
+            f"Translate with model {model} and thinking {'on' if think else 'off'}",
+            file=sys.stderr,
+            flush=True,
+        )
+
     for task in config.get("tasks", [None]):
-        if task is not None:
+        if task is not None and verbose >= 0:
             print(f"Translating task {task}...", file=sys.stderr, flush=True)
 
         task_prompt = config.get("task_prompt", {}).get(task, [])
@@ -125,8 +151,12 @@ def translate(config):
         else:
             out = open(path / f"{task}-CHN.md", "w")
 
-        for chunk in tqdm.tqdm(stream):
-            out.write(chunk.response)
+        if verbose >= 0:
+            for chunk in tqdm.tqdm(stream):
+                out.write(chunk.response)
+        else:
+            for chunk in stream:
+                out.write(chunk.response)
 
 
 def main():
