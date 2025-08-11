@@ -11,3 +11,6 @@ wheels/
 
 # Project-specific files
 config.toml
+
+# Data directory
+/data/

@@ -3,6 +3,7 @@ Translate IOI tasks using Ollama.
 """
 
 import argparse
+import pathlib
 import pprint
 import sys
 import tomllib
@@ -42,6 +43,12 @@ def parse_args():
         help="random seed",
     )
     parser.add_argument(
+        "-p",
+        "--path",
+        type=pathlib.Path,
+        help="path to tasks",
+    )
+    parser.add_argument(
         "-d",
         "--dump",
         action="store_true",
@@ -63,6 +70,8 @@ def load_config():
         config["think"] = args.think
     if args.seed is not None:
         config["seed"] = args.seed
+    if args.path is not None:
+        config["path"] = args.path
     if args.task is not None:
         config["tasks"] = args.task
     config["dump"] = args.dump
@@ -76,18 +85,26 @@ def translate(config):
     model = config.get("model", "qwen3")
     think = config.get("think", False)
     seed = config.get("seed", None)  # None for random seed
-    prompt_template = config.get("prompt_template", "将以下文本从英语翻译成中文：\n{text}")
+    path = config.get("path", ".")
+    if isinstance(path, str):
+        path = pathlib.Path(path)
+    prompt_template = config.get(
+        "prompt_template", "将以下文本从英语翻译成中文：\n{text}"
+    )
     global_prompt = config.get("global_prompt", [])
     global_prompt = "；".join(global_prompt)
 
     for task in config.get("tasks", [None]):
+        if task is not None:
+            print(f"Translating task {task}...", file=sys.stderr, flush=True)
+
         task_prompt = config.get("task_prompt", {}).get(task, [])
         task_prompt = "；".join(task_prompt)
 
         if task is None:
             text = sys.stdin.read()
         else:
-            text = open(f"{task}-ISC.md").read()
+            text = open(path / f"{task}-ISC.md").read()
 
         prompt = prompt_template.format(
             global_prompt=global_prompt,
@@ -106,7 +123,7 @@ def translate(config):
         if task is None:
             out = sys.stdout
         else:
-            out = open(f"{task}-CHN.md", "w")
+            out = open(path / f"{task}-CHN.md", "w")
 
         for chunk in tqdm.tqdm(stream):
             out.write(chunk.response)
