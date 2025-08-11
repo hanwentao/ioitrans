@@ -10,4 +10,4 @@ wheels/
 .venv
 
 # Project-specific files
-config.json
+config.toml

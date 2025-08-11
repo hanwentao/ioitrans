@@ -4,7 +4,7 @@
 
 ## 依赖
 
-- [ollama](https://ollama.com/)
+- [Ollama](https://ollama.com/)
 - [Python](https://www.python.org/)
 - [uv](https://docs.astral.sh/uv/)
 
@@ -13,7 +13,7 @@
 ```bash
 git clone https://github.com/hanwentao/ioitrans.git
 cd ioitrans
-cp config.json.example config.json
-# Edit config.json accordingly
+cp config.example.toml config.toml
+# Edit config.toml accordingly
 uv run main.py <task-name>
 ```

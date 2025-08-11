@@ -1,0 +1,24 @@
+# IOI 翻译工具配置文件
+
+# 使用的模型，按 Ollama 的格式指定，默认为 qwen3
+model = "qwen3"
+
+# 是否进行思考，默认不用
+think = false
+
+# 随机数种子，不指定的话由系统决定
+seed = 0
+
+# 提示词模板
+prompt_template = "将以下文本从英语翻译成中文。{global_prompt}；{task_prompt}：\n{text}"
+
+# 全局提示词，用于配置一般性规则
+global_prompt = [
+  "翻译尽量简短，人名、地名不翻译",
+  "把 example 翻译成例子，把 example 1 翻译成例 1，以此类推",
+  "把 sample grader 翻译成评测程序示例",
+]
+
+# 任务提示词，可为每个任务指定专门的提示词
+[task_prompt]
+festival = ["把 coupon 翻译成礼券"]
