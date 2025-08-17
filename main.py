@@ -165,12 +165,9 @@ def translate(config):
         else:
             out = open(path / f"{task}-CHN.md", "w")
 
-        if verbose > 0:
-            for chunk in tqdm.tqdm(stream):
-                out.write(chunk.response)
-        else:
-            for chunk in stream:
-                out.write(chunk.response)
+        for chunk in tqdm.tqdm(stream) if verbose > 0 else stream:
+            out.write(chunk.response)
+            out.flush()
 
 
 def main():
